@@ -38,9 +38,10 @@ public class OurSmtpClient
          String command = args[i];
          if(command == "-victims" || args.length > (i + 1))
          {
+            FileReader fileReader;
             try
             {
-               FileReader fileReader = new FileReader(args[i+1]);
+               fileReader = new FileReader(args[i+1]);
             }
             catch (FileNotFoundException e)
             {
@@ -52,9 +53,10 @@ public class OurSmtpClient
          }
          else if(command == "-pranks" || args.length > (i + 1))
          {
+            FileReader fileReader;
             try
             {
-               FileReader fileReader = new FileReader(args[i+1]);
+               fileReader = new FileReader(args[i+1]);
             }
             catch (FileNotFoundException e)
             {
