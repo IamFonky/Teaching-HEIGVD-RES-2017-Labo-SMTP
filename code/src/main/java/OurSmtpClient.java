@@ -18,17 +18,17 @@ public class OurSmtpClient
 
    private final static String END_OF_DATA = "\r\n.\r\n";
 
-   private static String name = "Fonky_Gatigato";
+   private static String name = "Fonky_Gati";
    private static String host = "smtp.heig-vd.ch";
    private static int port = 25;
-//   private static String emailFrom = "pierre-benjamin.monaco@heig-vd.ch";
-   private static String emailFrom = "miguel.santamaria@heig-vd.ch";
-//   private static String[] emailsTo = {"imfonky@gmail.com","gaetan.othenin-girard@heig-vd.ch"};
-   private static String[] emailsTo = {"olivier.liechti@heig-vd.ch"};
-//   private static String subject = "Tchô l'artiste!";
-   private static String subject = "[RES] SMTP - pierre-benjamin.monaco@heig-vd.ch";
-//   private static String data = "Yo GÂTEAU!!!";
-   private static String data = "Laboratoire réussi.";
+   private static String emailFrom = "pierre-benjamin.monaco@heig-vd.ch";
+//   private static String emailFrom = "miguel.santamaria@heig-vd.ch";
+   private static String[] emailsTo = {"imfonky@gmail.com","gaetan.othenin-girard@heig-vd.ch"};
+//   private static String[] emailsTo = {"olivier.liechti@heig-vd.ch"};
+   private static String subject = "Tchô l'artiste!";
+//   private static String subject = "[RES] SMTP - pierre-benjamin.monaco@heig-vd.ch";
+   private static String data = "Yo GÂTEAU!!! TESTS";
+//   private static String data = "Laboratoire réussi.";
 
    private static Socket socket;
 
@@ -38,22 +38,24 @@ public class OurSmtpClient
 
    public static void main(String[] args)
    {
-      if(args.length > 0)
+      for(int i = 0; i < args.length; ++i)
       {
-         name = args[0];
-      }
-      if(args.length > 1)
-      {
-         host = args[1];
-      }
-      if(args.length > 2)
-      {
-         port = Integer.getInteger(args[2]);
+         String command = args[i];
+         if(command == "-victims" || args.length > (i + 1))
+         {
+            String victimFile = args[i + 1];
+            //TODO : implémenter un gestionnaire de fichier qui va ouvrir et lire le fichier des victimes et placer les adresses dans un tableau
+         }
+         else if(command == "-pranks" || args.length > (i + 1))
+         {
+            String prankFile = args[i + 1];
+            //TODO : implémenter aussi un gestionnaire pour récupérer les pranks
+         }
       }
 
       try
       {
-         socket = new Socket("smtp.heig-vd.ch",25);
+         socket = new Socket(host,port);
       }
       catch (IOException e)
       {
@@ -110,21 +112,6 @@ public class OurSmtpClient
       sendAndFlush(END_OF_DATA);
 
    }
-
-//   private static void linesRead(int nbLines)
-//   {
-//      try
-//      {
-//         for(int i = 0; i < nbLines; ++i)
-//         {
-//            System.out.println(SERVER_P + reader.readLine());
-//         }
-//      }
-//      catch (IOException e)
-//      {
-//         System.out.println("Erreur lors de l'écoute du serveur : " + e.toString() );
-//      }
-//   }
 
    private static List<String> makeHeader()
    {
