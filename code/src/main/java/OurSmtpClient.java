@@ -38,13 +38,37 @@ public class OurSmtpClient
          String command = args[i];
          if(command == "-victims" || args.length > (i + 1))
          {
-            String victimFile = args[i + 1];
+            try
+            {
+               FileReader fileReader = new FileReader(args[i+1]);
+            }
+            catch (FileNotFoundException e)
+            {
+               System.out.println("Le fichier" + args[i+1] + " n'existe pas.");
+               return;
+            }
+
             //TODO : implémenter un gestionnaire de fichier qui va ouvrir et lire le fichier des victimes et placer les adresses dans un tableau
          }
          else if(command == "-pranks" || args.length > (i + 1))
          {
-            String prankFile = args[i + 1];
+            try
+            {
+               FileReader fileReader = new FileReader(args[i+1]);
+            }
+            catch (FileNotFoundException e)
+            {
+               System.out.println("Le fichier" + args[i+1] + " n'existe pas.");
+               return;
+            }
+
             //TODO : implémenter aussi un gestionnaire pour récupérer les pranks
+         }
+         else
+         {
+            System.out.println("Le programme possède deux commandes : -victim et " +
+                    "pranks, prenant chacune un chemin de fichier en paramêtre.");
+            return;
          }
       }
 
