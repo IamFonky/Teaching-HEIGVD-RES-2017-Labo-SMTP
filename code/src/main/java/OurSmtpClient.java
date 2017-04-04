@@ -1,11 +1,6 @@
-import com.sun.corba.se.impl.presentation.rmi.DynamicMethodMarshallerImpl;
-
 import java.io.*;
-import java.net.Inet4Address;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -19,7 +14,7 @@ public class OurSmtpClient
    private final static String END_OF_DATA = "\r\n.\r\n";
 
    private static String name = "Fonky_Gati";
-   private static String host = "smtp.heig-vd.ch";
+   private static String host = "localhost";
    private static int port = 25;
    private static String emailFrom = "pierre-benjamin.monaco@heig-vd.ch";
 //   private static String emailFrom = "miguel.santamaria@heig-vd.ch";
