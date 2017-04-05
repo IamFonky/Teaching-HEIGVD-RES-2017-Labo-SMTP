@@ -21,14 +21,14 @@ public class OurSmtpClient
    private static String name = "Fonky_Gatigato";
    private static String host = "smtp.heig-vd.ch";
    private static int port = 25;
-//   private static String emailFrom = "pierre-benjamin.monaco@heig-vd.ch";
-   private static String emailFrom = "miguel.santamaria@heig-vd.ch";
-//   private static String[] emailsTo = {"imfonky@gmail.com","gaetan.othenin-girard@heig-vd.ch"};
-   private static String[] emailsTo = {"olivier.liechti@heig-vd.ch"};
-//   private static String subject = "Tchô l'artiste!";
-   private static String subject = "[RES] SMTP - pierre-benjamin.monaco@heig-vd.ch";
-//   private static String data = "Yo GÂTEAU!!!";
-   private static String data = "Laboratoire réussi.";
+   private static String emailFrom = "pierre-benjamin.monaco@heig-vd.ch";
+//   private static String emailFrom = "miguel.santamaria@heig-vd.ch";
+   private static String[] emailsTo = {"imfonky@gmail.com","gaetan.othenin-girard@heig-vd.ch"};
+//   private static String[] emailsTo = {"olivier.liechti@heig-vd.ch"};
+   private static String subject = "Tchô l'artiste!";
+//   private static String subject = "[RES] SMTP - pierre-benjamin.monaco@heig-vd.ch";
+   private static String data = "Yo GÂTEAU!!!";
+//   private static String data = "Laboratoire réussi.";
 
    private static Socket socket;
 
@@ -53,7 +53,7 @@ public class OurSmtpClient
 
       try
       {
-         socket = new Socket("smtp.heig-vd.ch",25);
+         socket = new Socket(host,port);
       }
       catch (IOException e)
       {
