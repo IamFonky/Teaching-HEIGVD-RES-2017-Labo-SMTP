@@ -2,6 +2,8 @@
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import org.json.*;
@@ -28,7 +30,7 @@ public class OurSmtpClient
 //   private static String subject = "[RES] SMTP - pierre-benjamin.monaco@heig-vd.ch";
    private static String data = "Yo GÂTEAU!!! TESTS";
 //   private static String data = "Laboratoire réussi.";
-   private static Groups groups;
+   private static HashSet<Group> groups;
 
    private static Socket socket;
 
@@ -46,43 +48,13 @@ public class OurSmtpClient
             try
             {
                BufferedReader fr = new BufferedReader(new FileReader(args[i+1]));
-               String jsonData = "";
-               String jsonReader = "";
-               while((jsonReader = fr.readLine()) != null)
+
+               groups = new HashSet<Group>();
+               String JSONGroupLine;
+               while((JSONGroupLine = fr.readLine()) != null)
                {
-                  jsonData += jsonReader;
-               };
-
-               Group g1 = new Group(
-                       new String[]
-                               {
-                                    "salut1@yoyo.com",
-                                    "salut2@yoyo.com",
-                                    "salut3@yoyo.com",
-                                    "salut4@yoyo.com"
-                               },
-                       new String[]
-                               {
-                                       "ayeaye1@yoyo.com",
-                                       "ayeaye2@yoyo.com",
-                                       "ayeaye3@yoyo.com",
-                                       "ayeaye4@yoyo.com",
-                               }
-               );
-
-               ArrayList<Group> lsgrps = new ArrayList<Group>();
-               lsgrps.add(g1);
-
-                groups = new Groups();
-                String JSONGroupLine;
-                while((JSONGroupLine = fr.readLine()) != null)
-                {
-                    groups.addGroup(JsonObjectMapper.parseJson(JSONGroupLine,Group.class));
-                }
-
-                System.out.println(groups.toString());
-
-//               groups = JsonObjectMapper.parseJson(jsonData, ArrayList.class);
+               groups.add(JsonObjectMapper.parseJson(JSONGroupLine,Group.class));
+               }
             }
             catch (Exception e)
             {
@@ -141,20 +113,20 @@ public class OurSmtpClient
 
       try
       {
-//         for(int i = 0; i < groups.size(); ++i)
-//         {
-//            for(String sender : groups.get(i).getSenders())
-//            {
-//               sendMail(sender,"PRANK PRANK","BLABLABLA",groups.get(i).getReceivers());
-//            }
-//         }
+         for(Group group : groups)
+         {
+            for(String sender : group.getSenders())
+            {
+               sendMail(sender,"PRANK PRANK","BLABLABLA",group.getReceivers());
+            }
+         }
       }
       catch (Exception e)
       {
          System.out.println("Le fichier des groupes est mal formaté : " + e.toString());
       }
 
-      sendMail(emailFrom,subject,data,emailsTo);
+//      sendMail(emailFrom,subject,data,emailsTo);
 
    }
 
@@ -233,7 +205,7 @@ public class OurSmtpClient
       for (String line : lines)
       {
          System.out.println(CLIENT_P + line);
-         writer.println(line);
+         writer.println(line + "\r");
       }
       writer.flush();
    }
