@@ -17,9 +17,9 @@ public class OurSmtpClient
 
    private final static String END_OF_DATA = "\r\n.\r\n";
 
-   private static String name = "Fonky_Gati";
-   private static String host = "localhost";
-   private static int port = 25;
+   private static String name = "fonkygati";
+   private static String host = "192.168.1.109";
+   private static int port = 2525;
    private static String emailFrom = "pierre-benjamin.monaco@heig-vd.ch";
 //   private static String emailFrom = "miguel.santamaria@heig-vd.ch";
    private static String[] emailsTo = {"imfonky@gmail.com","gaetan.othenin-girard@heig-vd.ch"};
@@ -73,10 +73,14 @@ public class OurSmtpClient
                ArrayList<Group> lsgrps = new ArrayList<Group>();
                lsgrps.add(g1);
 
-               Groups grps = new Groups(lsgrps.toArray());
+                groups = new Groups();
+                String JSONGroupLine;
+                while((JSONGroupLine = fr.readLine()) != null)
+                {
+                    groups.addGroup(JsonObjectMapper.parseJson(JSONGroupLine,Group.class));
+                }
 
-               JsonObjectMapper.toJson(grps);
-
+                System.out.println(groups.toString());
 
 //               groups = JsonObjectMapper.parseJson(jsonData, ArrayList.class);
             }
