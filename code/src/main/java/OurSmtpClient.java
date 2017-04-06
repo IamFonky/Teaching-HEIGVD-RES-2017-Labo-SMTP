@@ -18,8 +18,11 @@ public class OurSmtpClient
 
    private final static String END_OF_DATA = "\r\n.\r\n";
 
+   private static boolean crlf_error = false;
+   private static boolean windowsClient = false;
+
    private static String name = "fonkygati";
-   private static String host = "192.168.43.11";;
+   private static String host = "localhost";;
    private static int port = 2525;
 
    private static HashSet<Group> groups;
@@ -104,27 +107,7 @@ public class OurSmtpClient
          }
       }
 
-      try
-      {
-         socket = new Socket(host, port);
-      }
-      catch (IOException e)
-      {
-         System.out.println("Il y a eu un souci à la connexion : " + e.toString());
-         return;
-      }
-
-      try
-      {
-         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())));
-         reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-      }
-      catch (IOException e)
-      {
-         System.out.println("Il y a eu un souci à la création du reader et writer : "
-               + e.toString());
-         return;
-      }
+      connect();
 
       try
       {
@@ -147,16 +130,54 @@ public class OurSmtpClient
       }
    }
 
+   private static void connect()
+   {
+      try
+      {
+         socket = new Socket(host, port);
+      }
+      catch (IOException e)
+      {
+         System.out.println("Il y a eu un souci à la connexion : " + e.toString());
+         return;
+      }
+
+      try
+      {
+         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())));
+         reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+      }
+      catch (IOException e)
+      {
+         System.out.println("Il y a eu un souci à la création du reader et writer : "
+                 + e.toString());
+         return;
+      }
+   }
+
+
    private static void sendMail(String emailFrom, String subject, String message, String... emailsTo)
    {
-      //Récupération de la ligne de bienvenue
-      easyRead();
 
-      //Envoi de la commande EHLO
-      sendAndFlush("EHLO " + name);
 
-      //Récupération de la réponse (infos sur les capacités)
-      easyRead();
+      do
+      {
+         if(crlf_error)
+         {
+            connect();
+            windowsClient = true;
+         }
+
+         //Récupération de la ligne de bienvenue
+         easyRead();
+
+         //Envoi de la commande EHLO
+         sendAndFlush("EHLO " + name);
+
+         //Récupération de la réponse (infos sur les capacités)
+         easyRead();
+      } while(crlf_error);
+
 
       //Envoi de la source du message
       sendAndFlush("MAIL FROM: " + emailFrom);
@@ -208,6 +229,18 @@ public class OurSmtpClient
          {
             lastLine = reader.readLine();
             System.out.println(SERVER_P + lastLine);
+
+            /*
+               If servers sends 501 msg then it's a problem with crlf -> lf.
+               This happens because we first start assuming that the client is
+               running on linux and sending to windows. Thus forcing a \r before
+               printing line and listening for a possible error (501).
+            */
+            if(lastLine.substring(0,3).equals("501"))
+            {
+               crlf_error = true;
+               return;
+            }
          }
          while (lastLine.length() > 3 && lastLine.charAt(3) != ' ');
       }
@@ -222,7 +255,19 @@ public class OurSmtpClient
       for (String line : lines)
       {
          System.out.println(CLIENT_P + line);
-         writer.println(line + "\r");
+         writer.print(line);
+         /*
+         If the client is run on linux we assume first that the server is hosted on
+         windows and we need to add à \r before the \n of println;
+          */
+         if(!windowsClient)
+         {
+            writer.println("\r");
+         }
+         else
+         {
+            writer.println("");
+         }
       }
       writer.flush();
    }
