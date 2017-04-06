@@ -20,7 +20,7 @@ public class OurSmtpClient
    private static boolean crlf_error = false;
 
    private static String name = "fonkygati";
-   private static String host = "localhost";;
+   private static String host = "192.168.1.109";
    private static int port = 2525;
 
    private static HashSet<Group> groups;
