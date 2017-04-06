@@ -8,6 +8,8 @@ import java.util.*;
  * Program that play a "Prank Campain" and send pranks emails from senders victims to receivers victims. It uses files
  * that contain series of predefined prank messages and list of victims.
  *
+ * By default this client is setted to send mails on a local server on port 2525
+ *
  * @author Pierre-Benjamin Monaco (IamFonky)
  * @author Gaëtan Othenin-Girard (GOthGir)
  */
@@ -52,79 +54,94 @@ public class OurSmtpClient
     */
    public static void main(String[] args)
    {
-      // Check for args
-      if(args.length < 1)
+      //If no args then try default behaviour
+      if (args.length < 1)
       {
-         System.out.println("Le programme à besoin d'arguments pour démarrer." +
-                 "Pour plus d'infos lancez le avec la commande -?");
-         return;
-      }
-
-      // We collect each commands and arguments and do the corresponding action
-      for (int i = 0; i < args.length; ++i)
-      {
-         String argument = "";
-         // Gets securely the argument of the actual command
-         if(args.length > (i + 1))
-         {
-            argument = args[i + 1];
-         }
-
+         //Tries to fetch victims and pranks lol files in the same location
          try
          {
-            // We get the current command
-            String command = args[i];
-
-            // Executes the corresponding action or displays the help
-            if (command.equals("-victims") && args.length > (i + 1))
-            {
-               // Fetches victims in victim file
-               fetchVictims(argument);
-               i++;
-            } else if (command.equals("-pranks") && args.length > (i + 1))
-            {
-               // Fetches pranks in victim pranks
-               fetchPranks(argument);
-               i++;
-            }
-            else if(command.equals("-address") && args.length > (i + 1))
-            {
-               // Sets the host address
-               host = args[i+1];
-               i++;
-            }
-            else if(command.equals("-port") && args.length > (i + 1))
-            {
-               // Sets the port number
-               port = Integer.valueOf(args[i+1]);
-               i++;
-            }
-            else
-            {
-               // Displays help!
-               System.out.println("Le programme possède quatres commandes (dans n'importe quel ordre) : ");
-               System.out.println("-victim  (obligatoire)      : chemin vers le fichier contenant les groupes de victimes");
-               System.out.println("-pranks  (obligatoire)      : chemin vers le fichier contenant les blagues");
-               System.out.println("-address (defaut=localhost) : adresse IP ou URL du serveur SMTP");
-               System.out.println("-port    (defaut=2525)      : port du serveur SMTP");
-               System.out.println();
-               return;
-            }
+            fetchVictims("victims.lol");
+            fetchPranks("pranks.lol");
          }
          catch (IOException e)
          {
-            System.out.println("Le fichier " + argument + " n'existe pas ou " +
-                  "ne peut pas être lu. \r\nErreur --> " + e.toString());
-            return;
+            System.out.println("Une erreur s'est produite!");
+            System.out.println("Le programme s'utilise de deux manières : ");
+            System.out.println(" 1 - placer les fichiers victims.lol et pranks.lol" +
+                    "à côté de l'exécutable .jar et le client lancera les mails" +
+                    "depuis un serveur smtp local écoutant le port 2525");
+            System.out.println(" 2 - appeler l'exécutable avec la commande -?");
          }
       }
+      else
+      {
+         // We collect each commands and arguments and do the corresponding action
+         for (int i = 0; i < args.length; ++i)
+         {
+            String argument = "";
+            // Gets securely the argument of the actual command
+            if (args.length > (i + 1))
+            {
+               argument = args[i + 1];
+            }
 
-      // Connect to the SMTP server
-      connect();
-      // Send the prank messages
-      groupSend();
-      // Disconnect from the SMTP server
-      disconnect();
+            try
+            {
+               // We get the current command
+               String command = args[i];
+
+               // Executes the corresponding action or displays the help
+               if (command.equals("-victims") && args.length > (i + 1))
+               {
+                  // Fetches victims in victim file
+                  fetchVictims(argument);
+                  i++;
+               }
+               else if (command.equals("-pranks") && args.length > (i + 1))
+               {
+                  // Fetches pranks in victim pranks
+                  fetchPranks(argument);
+                  i++;
+               }
+               else if (command.equals("-address") && args.length > (i + 1))
+               {
+                  // Sets the host address
+                  host = args[i + 1];
+                  i++;
+               }
+               else if (command.equals("-port") && args.length > (i + 1))
+               {
+                  // Sets the port number
+                  port = Integer.valueOf(args[i + 1]);
+                  i++;
+               }
+               else
+               {
+                  // Displays help!
+                  System.out.println("Le programme possède quatres commandes (dans n'importe quel ordre) : ");
+                  System.out.println("-victim  (obligatoire)      : chemin vers le fichier contenant les groupes de victimes");
+                  System.out.println("-pranks  (obligatoire)      : chemin vers le fichier contenant les blagues");
+                  System.out.println("-address (defaut=localhost) : adresse IP ou URL du serveur SMTP");
+                  System.out.println("-port    (defaut=2525)      : port du serveur SMTP");
+                  System.out.println();
+                  return;
+               }
+            }
+            catch (IOException e)
+            {
+               System.out.println("Le fichier " + argument + " n'existe pas ou " +
+                       "ne peut pas être lu. \r\nErreur --> " + e.toString());
+               return;
+            }
+         }
+
+         // Connect to the SMTP server
+         connect();
+         // Send the prank messages
+         groupSend();
+         // Disconnect from the SMTP server
+         disconnect();
+      }
    }
 
    /**
