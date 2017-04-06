@@ -67,7 +67,7 @@ public class OurSmtpClient
                      jsonGroup += cleanLine[0];
                   }
 
-                  // We 
+                  // We
                   if(jsonGroupLine.indexOf(END_OF_DATA_LOL) != -1)
                   {
                      groups.add(JsonObjectMapper.parseJson(jsonGroup, Group.class));
@@ -156,6 +156,9 @@ public class OurSmtpClient
       }
    }
 
+   /**
+    * Method used to connect the client to the SMTP server.
+    */
    private static void connect()
    {
       try
@@ -170,6 +173,7 @@ public class OurSmtpClient
 
       try
       {
+         // We create the writer to send messages to the server and a reader to get the response from the server
          writer = new SmtpWriter(new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))));
          reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
       }
@@ -182,43 +186,49 @@ public class OurSmtpClient
    }
 
 
+   /**
+    * Method that send a mail by sending the right commands to the server with the given informations.
+    * @param emailFrom the sender email address.
+    * @param subject the subject of the mail.
+    * @param message the content of the mail.
+    * @param emailsTo the email addresses we want to send the message.
+    */
    private static void sendMail(String emailFrom, String subject, String message, String... emailsTo)
    {
-      //Récupération de la ligne de bienvenue
+      // Getting the welcome message
       easyRead();
 
-      //Envoi de la commande EHLO
+      // Sending the EHLO command
       sendAndFlush("EHLO " + name);
 
-      //Récupération de la réponse (infos sur les capacités)
+      // Getting the response (infos of the capacities)
       easyRead();
 
-
-      //Envoi de la source du message
+      // Sending the mail's source
       sendAndFlush("MAIL FROM: " + emailFrom);
 
-      //Récupération de la réponse (email from ok)
+      // Getting the response (ok)
       easyRead();
 
       for (String emailTo : emailsTo)
       {
-         //Envoi de chaque destinataire du message
+         // Sending all the receivers
          sendAndFlush("RCPT TO: " + emailTo);
-         //Récupération de la réponse (email to ok)
+         // Getting the response (ok)
          easyRead();
       }
 
-      //Demande d'envoie du contenu du message
+      // Sending message data request
       sendAndFlush("DATA");
-      //Récupération de la réponse (start data)
+      // Getting the response (start data)
       easyRead();
 
-      //Envoi des données
+      // Sending the datas
       List<String> msgBody = makeHeader(emailFrom, subject, emailsTo);
       msgBody.add(message);
       sendAndFlush(msgBody.toArray(new String[0]));
 
-      //Envoi de la commande de fin de données
+      // Sending end of data command
       sendAndFlush(END_OF_DATA);
    }
 
