@@ -32,33 +32,42 @@ public class OurSmtpClient
 
    public static void main(String[] args)
    {
+      // Initalize random to choose random pranks
       rand = new Random();
 
+      // We collect each arguments and do the corresponding action if they are correct
       for (int i = 0; i < args.length; ++i)
       {
          BufferedReader fr = null;
          try
          {
+            // If there is another argument after this one, we
             if(args.length > (i + 1))
             {
                fr = new BufferedReader(new FileReader(args[i + 1]));
             }
 
+            // We get the current argument
             String command = args[i];
             System.out.println(command);
+
+            // If the argument is the victims file, we have to read the corresponding file and get the victims
             if (command.equals("-victims") && args.length > (i + 1))
             {
                groups = new HashSet<Group>();
                String jsonGroupLine;
                String jsonGroup = "";
+               // For each line from the file, collect the victims' mail
                while ((jsonGroupLine = fr.readLine()) != null)
                {
+                  // We clean the line by removing the END_OF_DATA_LOL separator
                   String[] cleanLine = jsonGroupLine.split(END_OF_DATA_LOL);
                   if(cleanLine.length > 0)
                   {
                      jsonGroup += cleanLine[0];
                   }
 
+                  // We 
                   if(jsonGroupLine.indexOf(END_OF_DATA_LOL) != -1)
                   {
                      groups.add(JsonObjectMapper.parseJson(jsonGroup, Group.class));
