@@ -4,10 +4,6 @@ import java.io.*;
 import java.net.Socket;
 import java.util.*;
 
-
-/**
- * Created by Fonky on 04.04.2017.
- */
 public class OurSmtpClient
 {
    private final static String CLIENT_P = "Client  ~~o ";
