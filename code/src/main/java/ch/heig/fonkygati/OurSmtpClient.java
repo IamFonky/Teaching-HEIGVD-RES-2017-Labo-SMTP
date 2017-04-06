@@ -16,7 +16,7 @@ public class OurSmtpClient
    private static boolean crlf_error = false;
 
    private static String name = "fonkygati";
-   private static String host = "192.168.1.109";
+   private static String host = "localhost";
    private static int port = 2525;
 
    private static HashSet<Group> groups;
@@ -66,8 +66,6 @@ public class OurSmtpClient
                   }
                }
                i++;
-               System.out.println("victims : " + groups);
-
             } else if (command.equals("-pranks") && args.length > (i + 1))
             {
                pranks = new HashSet<String>();
@@ -87,12 +85,24 @@ public class OurSmtpClient
                   }
                }
                i++;
-               System.out.println("pranks : " + prank);
-
-            } else
+            }
+            else if(command.equals("-address") && args.length > (i + 1))
             {
-               System.out.println("Le programme possède deux commandes : -victim et " +
-                     "pranks, prenant chacune un chemin de fichier en paramêtre.");
+               host = args[i+1];
+               i++;
+            }
+            else if(command.equals("-port") && args.length > (i + 1))
+            {
+               port = Integer.valueOf(args[i+1]);
+               i++;
+            }
+            else
+            {
+               System.out.println("Le programme possède quatres commandes (dans n'importe quel ordre) : ");
+               System.out.println("-victim  (obligatoire)      : chemin vers le fichier contenant les groupes de victimes");
+               System.out.println("-pranks  (obligatoire)      : chemin vers le fichier contenant les blagues");
+               System.out.println("-address (defaut=localhost) : adresse IP ou URL du serveur SMTP");
+               System.out.println("-port    (defaut=2525)      : port du serveur SMTP");
                return;
             }
          }
