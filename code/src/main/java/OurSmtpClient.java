@@ -30,7 +30,7 @@ public class OurSmtpClient
 
    private static Socket socket;
 
-   private static PrintWriter writer;
+   private static SmtpWriter writer;
    private static BufferedReader reader;
 
    private static Random rand;
@@ -144,7 +144,7 @@ public class OurSmtpClient
 
       try
       {
-         writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())));
+         writer = new SmtpWriter(new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))));
          reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
       }
       catch (IOException e)
@@ -229,18 +229,6 @@ public class OurSmtpClient
          {
             lastLine = reader.readLine();
             System.out.println(SERVER_P + lastLine);
-
-            /*
-               If servers sends 501 msg then it's a problem with crlf -> lf.
-               This happens because we first start assuming that the client is
-               running on linux and sending to windows. Thus forcing a \r before
-               printing line and listening for a possible error (501).
-            */
-            if(lastLine.substring(0,3).equals("501"))
-            {
-               crlf_error = true;
-               return;
-            }
          }
          while (lastLine.length() > 3 && lastLine.charAt(3) != ' ');
       }
@@ -255,19 +243,8 @@ public class OurSmtpClient
       for (String line : lines)
       {
          System.out.println(CLIENT_P + line);
-         writer.print(line);
-         /*
-         If the client is run on linux we assume first that the server is hosted on
-         windows and we need to add à \r before the \n of println;
-          */
-         if(!windowsClient)
-         {
-            writer.println("\r");
-         }
-         else
-         {
-            writer.println("");
-         }
+         writer.println(line);
+
       }
       writer.flush();
    }
