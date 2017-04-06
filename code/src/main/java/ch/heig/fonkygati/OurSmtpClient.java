@@ -1,28 +1,22 @@
+package ch.heig.fonkygati;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.*;
 
-import org.json.*;
-
-
-/**
- * Created by Fonky on 04.04.2017.
- */
 public class OurSmtpClient
 {
    private final static String CLIENT_P = "Client  ~~o ";
    private final static String SERVER_P = "Serveur ~~o ";
 
-   private final static String END_OF_DATA_LOL = "#½¬¼#¼";
+   private final static String END_OF_DATA_LOL = "!$&#%#&$!";
 
    private final static String END_OF_DATA = "\r\n.\r\n";
 
    private static boolean crlf_error = false;
-   private static boolean windowsClient = false;
 
    private static String name = "fonkygati";
-   private static String host = "localhost";;
+   private static String host = "localhost";
    private static int port = 2525;
 
    private static HashSet<Group> groups;
@@ -51,6 +45,7 @@ public class OurSmtpClient
             }
 
             String command = args[i];
+            System.out.println(command);
             if (command.equals("-victims") && args.length > (i + 1))
             {
                groups = new HashSet<Group>();
@@ -71,7 +66,6 @@ public class OurSmtpClient
                   }
                }
                i++;
-
             } else if (command.equals("-pranks") && args.length > (i + 1))
             {
                pranks = new HashSet<String>();
@@ -80,9 +74,9 @@ public class OurSmtpClient
                while ((prankLine = fr.readLine()) != null)
                {
                   String[] cleanLine = prankLine.split(END_OF_DATA_LOL);
-                  if(cleanLine.length > 0)
+                  if(cleanLine.length > 0 && !cleanLine[0].equals(END_OF_DATA_LOL))
                   {
-                     prank += cleanLine[0];
+                     prank += cleanLine[0] + "\r\n";
                   }
                   else
                   {
@@ -91,11 +85,24 @@ public class OurSmtpClient
                   }
                }
                i++;
-
-            } else
+            }
+            else if(command.equals("-address") && args.length > (i + 1))
             {
-               System.out.println("Le programme possède deux commandes : -victim et " +
-                     "pranks, prenant chacune un chemin de fichier en paramêtre.");
+               host = args[i+1];
+               i++;
+            }
+            else if(command.equals("-port") && args.length > (i + 1))
+            {
+               port = Integer.valueOf(args[i+1]);
+               i++;
+            }
+            else
+            {
+               System.out.println("Le programme possède quatres commandes (dans n'importe quel ordre) : ");
+               System.out.println("-victim  (obligatoire)      : chemin vers le fichier contenant les groupes de victimes");
+               System.out.println("-pranks  (obligatoire)      : chemin vers le fichier contenant les blagues");
+               System.out.println("-address (defaut=localhost) : adresse IP ou URL du serveur SMTP");
+               System.out.println("-port    (defaut=2525)      : port du serveur SMTP");
                return;
             }
          }
@@ -128,6 +135,16 @@ public class OurSmtpClient
       {
          System.out.println("Le fichier des groupes est mal formaté : " + e.toString());
       }
+
+      try
+      {
+         System.in.read();
+      }
+      catch (IOException e)
+      {
+         System.out.println("Il y a eu un souci avec votre clavier : "
+                 + e.toString());
+      }
    }
 
    private static void connect()
@@ -158,25 +175,14 @@ public class OurSmtpClient
 
    private static void sendMail(String emailFrom, String subject, String message, String... emailsTo)
    {
+      //Récupération de la ligne de bienvenue
+      easyRead();
 
+      //Envoi de la commande EHLO
+      sendAndFlush("EHLO " + name);
 
-      do
-      {
-         if(crlf_error)
-         {
-            connect();
-            windowsClient = true;
-         }
-
-         //Récupération de la ligne de bienvenue
-         easyRead();
-
-         //Envoi de la commande EHLO
-         sendAndFlush("EHLO " + name);
-
-         //Récupération de la réponse (infos sur les capacités)
-         easyRead();
-      } while(crlf_error);
+      //Récupération de la réponse (infos sur les capacités)
+      easyRead();
 
 
       //Envoi de la source du message

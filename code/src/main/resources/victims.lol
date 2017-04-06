@@ -1,2 +1,2 @@
-{"senders":["salut1@yoyo.com","salut2@yoyo.com","salut3@yoyo.com","salut4@yoyo.com"],"receivers":["ayeaye1@yoyo.com","ayeaye2@yoyo.com","ayeaye3@yoyo.com","ayeaye4@yoyo.com"]}#½¬¼#¼
-{"senders":["blabla@yoyo.com"],"receivers":["gruetzy@yoyo.com","salut@yoyo.com"]}#½¬¼#¼
+{"senders":["salut1@yoyo.com","salut2@yoyo.com","salut3@yoyo.com","salut4@yoyo.com"],"receivers":["ayeaye1@yoyo.com","ayeaye2@yoyo.com","ayeaye3@yoyo.com","ayeaye4@yoyo.com"]}!$&#%#&$!
+{"senders":["blabla@yoyo.com"],"receivers":["gruetzy@yoyo.com","salut@yoyo.com"]}!$&#%#&$!
