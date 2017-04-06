@@ -134,14 +134,15 @@ public class OurSmtpClient
                return;
             }
          }
-
-         // Connect to the SMTP server
-         connect();
-         // Send the prank messages
-         groupSend();
-         // Disconnect from the SMTP server
-         disconnect();
       }
+
+      // Connect to the SMTP server
+      connect();
+      // Send the prank messages
+      groupSend();
+      // Disconnect from the SMTP server
+      disconnect();
+
    }
 
    /**
