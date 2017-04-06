@@ -1,6 +1,7 @@
 package ch.heig.fonkygati;
 
 import java.io.PrintWriter;
+import java.io.Writer;
 
 /**
  * Created by Fonky on 06.04.2017.

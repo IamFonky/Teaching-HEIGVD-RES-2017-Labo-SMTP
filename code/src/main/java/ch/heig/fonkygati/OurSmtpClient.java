@@ -13,8 +13,6 @@ public class OurSmtpClient
 
    private final static String END_OF_DATA = "\r\n.\r\n";
 
-   private static boolean crlf_error = false;
-
    private static String name = "fonkygati";
    private static String host = "localhost";
    private static int port = 2525;
@@ -39,130 +37,76 @@ public class OurSmtpClient
     */
    public static void main(String[] args)
    {
-      // Initalize random to choose random pranks
-      rand = new Random();
+      //Check for args
+      if(args.length < 1)
+      {
+         System.out.println("Le programme à besoin d'arguments pour démarrer." +
+                 "Pour plus d'infos lancez le avec la commande -?");
+         return;
+      }
 
-      // We collect each arguments and do the corresponding action if they are correct
+      // We collect each commands and arguments and do the corresponding action
       for (int i = 0; i < args.length; ++i)
       {
-         BufferedReader fr = null;
+         String argument = "";
+         // Gets securely the argument of the actual command
+         if(args.length > (i + 1))
+         {
+            argument = args[i + 1];
+         }
+
          try
          {
-            // If there is another argument after this one, we
-            if(args.length > (i + 1))
-            {
-               fr = new BufferedReader(new FileReader(args[i + 1]));
-            }
-
-            // We get the current argument
+            // We get the current command
             String command = args[i];
-            System.out.println(command);
 
-            // If the argument is the victims file, we have to read the corresponding file and get the victims
+            //Executes the corresponding action or displays the help
             if (command.equals("-victims") && args.length > (i + 1))
             {
-               groups = new HashSet<Group>();
-               String jsonGroupLine;
-               String jsonGroup = "";
-               // For each line from the file, collect the victims' mail
-               while ((jsonGroupLine = fr.readLine()) != null)
-               {
-                  // We clean the line by removing the END_OF_DATA_LOL separator
-                  String[] cleanLine = jsonGroupLine.split(END_OF_DATA_LOL);
-                  if(cleanLine.length > 0)
-                  {
-                     jsonGroup += cleanLine[0];
-                  }
-
-                  // We
-                  if(jsonGroupLine.indexOf(END_OF_DATA_LOL) != -1)
-                  {
-                     groups.add(JsonObjectMapper.parseJson(jsonGroup, Group.class));
-                     jsonGroup = "";
-                  }
-               }
+               //Fetches victims in victim file
+               fetchVictims(argument);
                i++;
             } else if (command.equals("-pranks") && args.length > (i + 1))
             {
-               pranks = new HashSet<String>();
-               String prankLine;
-               String prank = "";
-               while ((prankLine = fr.readLine()) != null)
-               {
-                  String[] cleanLine = prankLine.split(END_OF_DATA_LOL);
-                  if(cleanLine.length > 0 && !cleanLine[0].equals(END_OF_DATA_LOL))
-                  {
-                     prank += cleanLine[0] + "\r\n";
-                  }
-                  else
-                  {
-                     pranks.add(prank);
-                     prank = "";
-                  }
-               }
+               //Fetches pranks in victim pranks
+               fetchPranks(argument);
                i++;
             }
             else if(command.equals("-address") && args.length > (i + 1))
             {
+               //Sets the host address
                host = args[i+1];
                i++;
             }
             else if(command.equals("-port") && args.length > (i + 1))
             {
+               //Sets the port number
                port = Integer.valueOf(args[i+1]);
                i++;
             }
             else
             {
+               //Displays help!
                System.out.println("Le programme possède quatres commandes (dans n'importe quel ordre) : ");
                System.out.println("-victim  (obligatoire)      : chemin vers le fichier contenant les groupes de victimes");
                System.out.println("-pranks  (obligatoire)      : chemin vers le fichier contenant les blagues");
                System.out.println("-address (defaut=localhost) : adresse IP ou URL du serveur SMTP");
                System.out.println("-port    (defaut=2525)      : port du serveur SMTP");
+               System.out.println();
                return;
             }
          }
-         catch (Exception e)
+         catch (IOException e)
          {
-            System.out.println("Le fichier " + args[i] + " n'existe pas ou " +
+            System.out.println("Le fichier " + argument + " n'existe pas ou " +
                   "ne peut pas être lu. \r\nErreur --> " + e.toString());
             return;
          }
       }
 
       connect();
-
-      try
-      {
-         // We send emails to the selected victims
-         for (Group group : groups)
-         {
-            for (String sender : group.getSenders())
-            {
-               // Send the mail with a random prank chosen in the pranks file
-               sendMail(
-                     sender,
-                     "Let's LOL",
-                     (String)(pranks.toArray()[Math.abs(rand.nextInt()%pranks.size())]),
-                     group.getReceivers()
-               );
-            }
-         }
-      }
-      catch (Exception e)
-      {
-         System.out.println("Le fichier des groupes est mal formaté : " + e.toString());
-      }
-
-      try
-      {
-         System.in.read();
-      }
-      catch (IOException e)
-      {
-         System.out.println("Il y a eu un souci avec votre clavier : "
-                 + e.toString());
-      }
+      groupSend();
+      disconnect();
    }
 
    /**
@@ -195,6 +139,77 @@ public class OurSmtpClient
       }
    }
 
+   private static void fetchVictims(String path) throws IOException
+   {
+      reader = new BufferedReader(new FileReader(path));
+      groups = new HashSet<>();
+      String jsonGroupLine;
+      String jsonGroup = "";
+      // For each line from the file, collect the victims' mail
+      while ((jsonGroupLine = reader.readLine()) != null)
+      {
+         // We clean the line by removing the END_OF_DATA_LOL separator
+         String[] cleanLine = jsonGroupLine.split(END_OF_DATA_LOL);
+         if(cleanLine.length > 0)
+         {
+            jsonGroup += cleanLine[0];
+         }
+
+         // We
+         if(jsonGroupLine.indexOf(END_OF_DATA_LOL) != -1)
+         {
+            groups.add(JsonObjectMapper.parseJson(jsonGroup, Group.class));
+            jsonGroup = "";
+         }
+      }
+      reader.close();
+   }
+
+   private static void fetchPranks(String path) throws IOException
+   {
+      reader = new BufferedReader(new FileReader(path));
+      pranks = new HashSet<>();
+      String prankLine;
+      String prank = "";
+      while ((prankLine = reader.readLine()) != null)
+      {
+         String[] cleanLine = prankLine.split(END_OF_DATA_LOL);
+         if(cleanLine.length > 0 && !cleanLine[0].equals(END_OF_DATA_LOL))
+         {
+            prank += cleanLine[0] + "\r\n";
+         }
+         else
+         {
+            pranks.add(prank);
+            prank = "";
+         }
+      }
+      reader.close();
+   }
+
+   private static void groupSend()
+   {
+      groupSend("Let's LOL");
+   }
+
+   private static void groupSend(String subject)
+   {
+      // Initalize random to choose random pranks
+      rand = new Random();
+
+      for (Group group : groups)
+      {
+         for (String sender : group.getSenders())
+         {
+            sendMail(
+                    sender,
+                    subject,
+                    (String)(pranks.toArray()[Math.abs(rand.nextInt()%pranks.size())]),
+                    group.getReceivers()
+            );
+         }
+      }
+   }
 
    /**
     * Method that send a mail by sending the right commands to the server with the given informations.
@@ -298,5 +313,19 @@ public class OurSmtpClient
 
       }
       writer.flush();
+   }
+
+   private static void disconnect()
+   {
+      try
+      {
+         socket.close();
+         reader.close();
+      }
+      catch (IOException e)
+      {
+         System.out.println("Une erreur s'est produite à la fermeture du programme : " +
+                 e.toString());
+      }
    }
 }
