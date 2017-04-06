@@ -178,7 +178,7 @@ public class OurSmtpClient
       easyRead();
 
       //Envoi des données
-      List<String> msgBody = makeHeader(emailFrom, subject, message, emailsTo);
+      List<String> msgBody = makeHeader(emailFrom, subject, emailsTo);
       msgBody.add(message);
       sendAndFlush(msgBody.toArray(new String[0]));
 
@@ -186,7 +186,7 @@ public class OurSmtpClient
       sendAndFlush(END_OF_DATA);
    }
 
-   private static List<String> makeHeader(String emailFrom, String subject, String message, String... emailsTo)
+   private static List<String> makeHeader(String emailFrom, String subject,String... emailsTo)
    {
       List<String> header = new ArrayList<String>();
       header.add("From: " + emailFrom);
