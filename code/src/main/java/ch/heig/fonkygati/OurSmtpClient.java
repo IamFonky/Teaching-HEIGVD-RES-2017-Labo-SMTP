@@ -1,9 +1,8 @@
+package ch.heig.fonkygati;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.*;
-
-import org.json.*;
 
 
 /**
@@ -19,7 +18,6 @@ public class OurSmtpClient
    private final static String END_OF_DATA = "\r\n.\r\n";
 
    private static boolean crlf_error = false;
-   private static boolean windowsClient = false;
 
    private static String name = "fonkygati";
    private static String host = "localhost";;
@@ -153,30 +151,29 @@ public class OurSmtpClient
                  + e.toString());
          return;
       }
+
+      try
+      {
+         System.in.read();
+      }
+      catch (IOException e)
+      {
+         System.out.println("Il y a eu un souci avec votre clavier : "
+                 + e.toString());
+      }
    }
 
 
    private static void sendMail(String emailFrom, String subject, String message, String... emailsTo)
    {
+      //Récupération de la ligne de bienvenue
+      easyRead();
 
+      //Envoi de la commande EHLO
+      sendAndFlush("EHLO " + name);
 
-      do
-      {
-         if(crlf_error)
-         {
-            connect();
-            windowsClient = true;
-         }
-
-         //Récupération de la ligne de bienvenue
-         easyRead();
-
-         //Envoi de la commande EHLO
-         sendAndFlush("EHLO " + name);
-
-         //Récupération de la réponse (infos sur les capacités)
-         easyRead();
-      } while(crlf_error);
+      //Récupération de la réponse (infos sur les capacités)
+      easyRead();
 
 
       //Envoi de la source du message

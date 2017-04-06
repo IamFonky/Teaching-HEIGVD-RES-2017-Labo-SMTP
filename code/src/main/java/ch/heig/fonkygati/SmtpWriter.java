@@ -1,3 +1,5 @@
+package ch.heig.fonkygati;
+
 import java.io.PrintWriter;
 
 /**
