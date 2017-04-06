@@ -55,8 +55,13 @@ public class OurSmtpClient
                String jsonGroup = "";
                while ((jsonGroupLine = fr.readLine()) != null)
                {
-                  jsonGroup += jsonGroupLine.split(END_OF_DATA_LOL)[0];
-                  if (jsonGroupLine.indexOf(END_OF_DATA_LOL) != -1)
+                  String[] cleanLine = jsonGroupLine.split(END_OF_DATA_LOL);
+                  if(cleanLine.length > 0)
+                  {
+                     jsonGroup += cleanLine[0];
+                  }
+
+                  if(jsonGroupLine.indexOf(END_OF_DATA_LOL) != -1)
                   {
                      groups.add(JsonObjectMapper.parseJson(jsonGroup, Group.class));
                      jsonGroup = "";
