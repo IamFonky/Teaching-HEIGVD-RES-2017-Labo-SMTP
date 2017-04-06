@@ -13,7 +13,7 @@ public class OurSmtpClient
    private final static String CLIENT_P = "Client  ~~o ";
    private final static String SERVER_P = "Serveur ~~o ";
 
-   private final static String END_OF_DATA_LOL = "#½¬¼#¼";
+   private final static String END_OF_DATA_LOL = "!$&#%#&$!";
 
    private final static String END_OF_DATA = "\r\n.\r\n";
 
@@ -49,6 +49,7 @@ public class OurSmtpClient
             }
 
             String command = args[i];
+            System.out.println(command);
             if (command.equals("-victims") && args.length > (i + 1))
             {
                groups = new HashSet<Group>();
@@ -69,6 +70,7 @@ public class OurSmtpClient
                   }
                }
                i++;
+               System.out.println("victims : " + groups);
 
             } else if (command.equals("-pranks") && args.length > (i + 1))
             {
@@ -78,9 +80,9 @@ public class OurSmtpClient
                while ((prankLine = fr.readLine()) != null)
                {
                   String[] cleanLine = prankLine.split(END_OF_DATA_LOL);
-                  if(cleanLine.length > 0)
+                  if(cleanLine.length > 0 && !cleanLine[0].equals(END_OF_DATA_LOL))
                   {
-                     prank += cleanLine[0];
+                     prank += cleanLine[0] + "\r\n";
                   }
                   else
                   {
@@ -89,6 +91,7 @@ public class OurSmtpClient
                   }
                }
                i++;
+               System.out.println("pranks : " + prank);
 
             } else
             {
@@ -126,6 +129,16 @@ public class OurSmtpClient
       {
          System.out.println("Le fichier des groupes est mal formaté : " + e.toString());
       }
+
+      try
+      {
+         System.in.read();
+      }
+      catch (IOException e)
+      {
+         System.out.println("Il y a eu un souci avec votre clavier : "
+                 + e.toString());
+      }
    }
 
    private static void connect()
@@ -150,16 +163,6 @@ public class OurSmtpClient
          System.out.println("Il y a eu un souci à la création du reader et writer : "
                  + e.toString());
          return;
-      }
-
-      try
-      {
-         System.in.read();
-      }
-      catch (IOException e)
-      {
-         System.out.println("Il y a eu un souci avec votre clavier : "
-                 + e.toString());
       }
    }
 
