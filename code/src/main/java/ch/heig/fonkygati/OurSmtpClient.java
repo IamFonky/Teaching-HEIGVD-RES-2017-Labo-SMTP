@@ -30,6 +30,13 @@ public class OurSmtpClient
    private static Random rand;
 
 
+   /**
+    * Main method of the "Prank Campain" program. It accept two arguments :
+    *    -victims "victimsFile"
+    *    -pranks "pranksFile"
+    * See the README.md for the specification of the files.
+    * @param args victims and pranks files.
+    */
    public static void main(String[] args)
    {
       // Initalize random to choose random pranks
@@ -127,10 +134,12 @@ public class OurSmtpClient
 
       try
       {
+         // We send emails to the selected victims
          for (Group group : groups)
          {
             for (String sender : group.getSenders())
             {
+               // Send the mail with a random prank chosen in the pranks file
                sendMail(
                      sender,
                      "Let's LOL",
@@ -163,6 +172,7 @@ public class OurSmtpClient
    {
       try
       {
+         // Connection to the server.
          socket = new Socket(host, port);
       }
       catch (IOException e)
@@ -188,7 +198,7 @@ public class OurSmtpClient
 
    /**
     * Method that send a mail by sending the right commands to the server with the given informations.
-    * @param emailFrom the sender email address.
+    * @param emailFrom the sender's email address.
     * @param subject the subject of the mail.
     * @param message the content of the mail.
     * @param emailsTo the email addresses we want to send the message.
@@ -232,6 +242,13 @@ public class OurSmtpClient
       sendAndFlush(END_OF_DATA);
    }
 
+   /**
+    * Method used to make the header from the email.
+    * @param emailFrom the sender's email address.
+    * @param subject the subject of the mail.
+    * @param emailsTo the receivers of the mail.
+    * @return
+    */
    private static List<String> makeHeader(String emailFrom, String subject,String... emailsTo)
    {
       List<String> header = new ArrayList<String>();
@@ -245,11 +262,16 @@ public class OurSmtpClient
       return header;
    }
 
+   /**
+    * Method used to read the response from a SMTP server. It is make specifically for SMTP servers.
+    */
    private static void easyRead()
    {
       try
       {
          String lastLine;
+         // We read each line sent by the server while there isn't a space character in the 4th position
+         // A message with a space means that there isn't a new line after the current one (specific to SMTP)
          do
          {
             lastLine = reader.readLine();
@@ -263,6 +285,10 @@ public class OurSmtpClient
       }
    }
 
+   /**
+    * Method used to write to the server.
+    * @param lines strings we want to write to the server.
+    */
    private static void sendAndFlush(String... lines)
    {
       for (String line : lines)
