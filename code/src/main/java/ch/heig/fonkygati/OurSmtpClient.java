@@ -99,6 +99,7 @@ public class OurSmtpClient
 
       connect();
       groupSend();
+      disconnect();
    }
 
    private static void connect()
@@ -278,5 +279,19 @@ public class OurSmtpClient
 
       }
       writer.flush();
+   }
+
+   private static void disconnect()
+   {
+      try
+      {
+         socket.close();
+         reader.close();
+      }
+      catch (IOException e)
+      {
+         System.out.println("Une erreur s'est produite à la fermeture du programme : " +
+                 e.toString());
+      }
    }
 }
