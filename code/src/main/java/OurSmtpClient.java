@@ -19,7 +19,7 @@ public class OurSmtpClient
    private final static String END_OF_DATA = "\r\n.\r\n";
 
    private static String name = "fonkygati";
-   private static String host = "192.168.1.109";
+   private static String host = "192.168.43.11";;
    private static int port = 2525;
 
    private static HashSet<Group> groups;
