@@ -29,10 +29,10 @@ C'est deux spermatozoïdes qui discutent :
 - Dis, c'est encore loin les ovaires ?
 - Tu parles, on n'est qu'aux amydales.
 !$&#%#&$!
-- Dis maman, un citron, ça a des pattes ?
+- Dis maman, un citron, ca a des pattes ?
 - ???
-- Dis maman, un citron, ça a des pattes ?
-- Euh... ben non, un citron ça n'a pas de pattes.
+- Dis maman, un citron, ca a des pattes ?
+- Euh... ben non, un citron ca n'a pas de pattes.
 - Ah ben c'est un poussin que j'ai presse, alors.
 !$&#%#&$!
 Un gendarme fais stopper une automobiliste.
@@ -53,7 +53,7 @@ Le Parisien repond:
 Une femme donne une piece a un clochard qui mendie sur le trottoir.
 - Tenez ! Lui dit-elle avec mepris, mais vous ne le meritez pas : vous n'etes pas infirme ou handicape !
 Et le clochard lui repond :
-- C'est ça, et pour vos vingt cents, je devrais me faire amputer la jambe peut-etre ?
+- C'est ca, et pour vos vingt cents, je devrais me faire amputer la jambe peut-etre ?
 !$&#%#&$!
 Une star de cinema est en train de prendre son bain.
 Le robinet d'eau froide dit au robinet d'eau chaude :
