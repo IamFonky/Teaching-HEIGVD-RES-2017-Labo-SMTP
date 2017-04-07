@@ -23,7 +23,8 @@ The SMTP protocol works like this:
 11. `Client: .`: an unique point indicate the end of data of the mail content.
 12. `Server: 250 Ok`: accepts the mail content.
 13. `Client: QUIT`: the client finish the communication.
-14. `Server: 221 Closing connection`: the server close the connection.
+14. `Server: 221 Closing connection`: the server close the connection.  
+
 When you have understood how the SMTP communication works, it is very simple to write a program that send the correct commands and the data you want. The interesting point is the 3rd where you specifies the mail sender. You can indicate any sender you want !
 
 Another specification of the SMTP protocol important to understand is how we know when the server have finished to send responses to the client. If we take a multiple line response example :
@@ -36,7 +37,7 @@ We see that the last line is the only one that contain a space separator after t
 
 It is important to understand how the server interprets an end of line sent by the client. The SMTP take the `\n\r` end of line separator.
 
-###How to use MailBomb Boom Go ?
+## How to use MailBomb Boom Go ?
 First, you have to download the executable JAR file. Then you have to create the victims and pranks files by following these formats :
 
 **The victims file must be like this :**
@@ -63,10 +64,10 @@ The file simply contains the prank texts separated with the `!$&#%#&$!` separato
 
 When you have created your two files you have two options to run the program :
 
-**Basic usage:**
+**Basic usage:**  
 You have to place the two files named `victims.lol` and `pranks.lol` in the same directory as the program and simply run the JAR executable. It will try to connect to a smtp server hosted locally (localhost) listening on port 2525.
 
-**Advanced usage:**
+**Advanced usage:**  
 - `-victims "<pathToFile>"`: the path to your victims file.
 - `-pranks "<pathToFile>"`: the path to your pranks file.
 - `-host <serverAddress>`: the SMTP server host you want to use. (default : localhost)
