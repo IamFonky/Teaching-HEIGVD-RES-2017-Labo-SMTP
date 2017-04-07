@@ -165,7 +165,7 @@ public class OurSmtpClient
       {
          // We create the writer to send messages to the server and a reader to get the response from the server
          writer = new SmtpWriter(new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))));
-         reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+         reader = new BufferedReader(new InputStreamReader(socket.getInputStream(),"UTF-8"));
       }
       catch (IOException e)
       {
@@ -332,10 +332,22 @@ public class OurSmtpClient
       List<String> header = new ArrayList<String>();
       // Add the sender
       header.add("From: " + emailFrom);
+      String oneLineReceivers = "";
       // Add all the receivers
       for (int i = 0; i < emailsTo.length; ++i)
       {
-         header.add((i == 0 || noCC) ? "To: " : "Cc: " + emailsTo[i]);
+         if(noCC)
+         {
+            oneLineReceivers += (((i == 0) ? "To: " : "; ") + emailsTo[i]);
+            if(i == (emailsTo.length - 1))
+            {
+               header.add(oneLineReceivers);
+            }
+         }
+         else
+         {
+            header.add((i == 0) ? "To: " : "Cc: " + emailsTo[i]);
+         }
       }
       // Add the mail's subject
       header.add("Subject: " + subject);
@@ -390,6 +402,8 @@ public class OurSmtpClient
     */
    private static void disconnect()
    {
+      sendAndFlush("QUIT ");
+      easyRead();
       try
       {
          socket.close();
