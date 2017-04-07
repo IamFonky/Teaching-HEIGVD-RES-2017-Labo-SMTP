@@ -312,7 +312,7 @@ public class OurSmtpClient
       easyRead();
 
       // Sending the datas
-      List<String> msgBody = makeHeader(emailFrom, subject, emailsTo);
+      List<String> msgBody = makeHeader(emailFrom, subject, true, emailsTo);
       msgBody.add(message);
       sendAndFlush(msgBody.toArray(new String[0]));
 
@@ -327,7 +327,7 @@ public class OurSmtpClient
     * @param emailsTo the receivers of the mail.
     * @return
     */
-   private static List<String> makeHeader(String emailFrom, String subject,String... emailsTo)
+   private static List<String> makeHeader(String emailFrom, String subject, boolean noCC, String... emailsTo)
    {
       List<String> header = new ArrayList<String>();
       // Add the sender
@@ -335,7 +335,7 @@ public class OurSmtpClient
       // Add all the receivers
       for (int i = 0; i < emailsTo.length; ++i)
       {
-         header.add((i == 0) ? "To: " : "Cc: " + emailsTo[i]);
+         header.add((i == 0 || noCC) ? "To: " : "Cc: " + emailsTo[i]);
       }
       // Add the mail's subject
       header.add("Subject: " + subject);
